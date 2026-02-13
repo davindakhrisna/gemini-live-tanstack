@@ -17,6 +17,7 @@ This project uses [Vitest](https://vitest.dev/) for testing. You can run the tes
 pnpm test
 ```
 
-## Important Notice for Firefox User
+## Technical Hurdles
 
-If you are using Firefox, you may need to enable the `media.peerconnection.ice.loopback` preference in about:config to connect to the your local/cloud server.
+- Zombie Logs per connection
+- Fails to read screen after connect-disconnect-connect (agents need to be restarted)

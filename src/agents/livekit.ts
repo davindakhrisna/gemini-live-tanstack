@@ -3,7 +3,7 @@ import { env } from "./env";
 
 export async function agentJoinRoom(roomName: string) {
 	const token = new AccessToken(env.LIVEKIT_API_KEY, env.LIVEKIT_API_SECRET, {
-		identity: "screen-agent",
+		identity: "Gemini Live",
 	});
 
 	token.addGrant({

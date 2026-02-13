@@ -10,7 +10,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "agent-10": "node --env-file=.env.local --import tsx src/agents/screenShare/index.ts 10"
+    "agent-10": "node --env-file=.env.local --import tsx src/agents/index.ts 10"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
