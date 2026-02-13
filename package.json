@@ -12,6 +12,7 @@
     "check": "biome check"
   },
   "dependencies": {
+    "@livekit/rtc-node": "^0.13.24",
     "@orpc/client": "^1.13.0",
     "@orpc/json-schema": "^1.13.0",
     "@orpc/openapi": "^1.13.0",
@@ -67,6 +68,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "jsdom": "^27.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.7.2",
     "vite": "^7.1.7",
     "vitest": "^3.0.5",

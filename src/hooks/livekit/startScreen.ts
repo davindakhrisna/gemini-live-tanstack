@@ -1,4 +1,4 @@
-import type { Room } from "livekit-client";
+import { Track, type Room } from "livekit-client";
 
 export async function startScreenShare(room: Room) {
 	const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -6,7 +6,11 @@ export async function startScreenShare(room: Room) {
 		audio: false,
 	});
 
-	await room.localParticipant.publishTrack(stream.getVideoTracks()[0]);
+	const screenTrack = stream.getVideoTracks()[0];
+
+	await room.localParticipant.publishTrack(screenTrack, {
+		source: Track.Source.ScreenShare,
+	});
 
 	return stream;
 }

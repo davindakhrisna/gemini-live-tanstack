@@ -1,12 +1,13 @@
-import { Room, RoomConnectOptions } from "livekit-client";
+import type { RoomConnectOptions } from "livekit-client";
+import { Room } from "livekit-client";
 import { orpc } from "@/orpc/client";
 
 export async function connectLiveKit(roomName: string) {
 	const { token } = await orpc.livekit.getToken.call({ room: roomName });
-	
+
 	const connectOpts: RoomConnectOptions = {
-      autoSubscribe: true,
-    };
+		autoSubscribe: true,
+	};
 
 	const room = new Room({
 		adaptiveStream: true,
