@@ -83,7 +83,7 @@ export const agentRouter = {
 					const videoStream = new VideoStream(track);
 
 					let lastSent = 0;
-					let lastPromptSent = 0;
+					let lastPromptSent = Date.now() - 2000; // Let some frames flow first (2s delay)
 					let busy = false;
 
 					try {
@@ -94,7 +94,7 @@ export const agentRouter = {
 
 							const now = Date.now();
 
-							if (now - lastSent < 1000) continue;
+							if (now - lastSent < 15000) continue; // 2 FPS (500ms)
 							lastSent = now;
 
 							if (busy) continue;
@@ -114,7 +114,10 @@ export const agentRouter = {
 
 								if (now - lastPromptSent >= 4000) {
 									lastPromptSent = now;
-									await gemini.sendText("Describe what changed on screen.");
+									console.log("[agent] PROMPTING GEMINI for description...");
+									await gemini.sendText(
+										"Describe the code and text currently visible on screen in detail.",
+									);
 								}
 
 								console.log("[agent] sent frame to gemini");
