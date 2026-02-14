@@ -1,30 +1,56 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { env } from "@/env"
+import { GoogleGenAI } from "@google/genai";
+import { env } from "@/env";
 
 export async function connectGeminiSession(onText: (text: string) => void) {
-    const apiKey = env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
+	const apiKey = env.GEMINI_API_KEY;
+	if (!apiKey) throw new Error("Missing GEMINI_API_KEY");
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+	const client = new GoogleGenAI({ apiKey });
 
-    const model = genAI.getGenerativeModel({
-        model: env.GEMINI_MODEL,
-    });
+	const session = await client.live.connect({
+		model: env.GEMINI_MODEL,
+		config: {
+			responseModalities: ["TEXT"],
+		},
+	});
 
-    return {
-        async sendFrame(base64Jpeg: string) {
-            const result = await model.generateContent([
-                "Describe what you see in this screenshot and give advice.",
-                {
-                    inlineData: {
-                        data: base64Jpeg,
-                        mimeType: "image/jpeg",
-                    },
-                },
-            ]);
+	// background receive loop
+	(async () => {
+		try {
+			for await (const msg of session.receive()) {
+				const text =
+					msg?.candidates?.[0]?.content?.parts
+						?.map((p: any) => p.text)
+						?.filter(Boolean)
+						?.join("") ?? "";
 
-            const text = result.response.text();
-            onText(text);
-        },
-    };
+				if (text) onText(text);
+			}
+		} catch (err) {
+			console.error("[gemini-live] receive loop error:", err);
+		}
+	})();
+
+	return {
+		async sendFrame(base64Jpeg: string) {
+			await session.sendRealtimeInput({
+				media: [
+					{
+						mimeType: "image/jpeg",
+						data: base64Jpeg,
+					},
+				],
+			});
+		},
+
+		async sendText(text: string) {
+			await session.send({
+				input: text,
+			});
+		},
+
+		async close() {
+			await session.close();
+		},
+	};
 }
